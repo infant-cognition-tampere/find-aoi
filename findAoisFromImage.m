@@ -1,4 +1,6 @@
-function tobii_aois = findAoisFromImage(imagefile, propertystring, mergetreshold, minsize, maxsize)
+function aois = findAoisFromImage(imagefile, propertystring, mergetreshold, minsize, maxsize)
+    % Return aois found for an imagefile. Aoi is defined as
+    % [xmin xmax ymin ymax] and values ranging 0..1 (normalized).
 
     propertyDetector = vision.CascadeObjectDetector(propertystring);
     propertyDetector.MergeThreshold = mergetreshold;
@@ -11,12 +13,12 @@ function tobii_aois = findAoisFromImage(imagefile, propertystring, mergetreshold
     % find properties from the image
     bboxes = step(propertyDetector, I);
     
-    % calculate tobii aois from bboxes-matlab aoi-list
+    % calculate aois from bboxes-matlab aoi-list
     [hi, wi, ~] = size(I);
-    tobii_aois = [];
+    aois = [];
     for i=1:size(bboxes, 1)
         bbox = bboxes(i,:);
-        tobii_aois(end+1,:) = [bbox(1)/wi (bbox(1)+bbox(3))/wi ...
+        aois(end+1,:) = [bbox(1)/wi (bbox(1)+bbox(3))/wi ...
                                bbox(2)/hi (bbox(2)+bbox(4))/hi];
     end
     
