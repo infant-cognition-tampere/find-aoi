@@ -6,6 +6,7 @@ function findImagePropertiesFromDir(directorypath, propertyname)
     mergetreshold = 2;      % default 4
     minsize = [100 100];    % default []
     maxsize = [200 200];    % default []
+    roi = [];               % [] -> will not use roi
 
     % get filenames from directory
     files = dir(directorypath);
@@ -18,13 +19,15 @@ function findImagePropertiesFromDir(directorypath, propertyname)
     rc = 1;
     for f = 1:length(files)
         filepath = [directorypath filesep files(f).name];
-        aoi = findAoisFromImage(filepath, propertyname, mergetreshold, minsize, maxsize);
+        aois = findAoisFromImage(filepath, propertyname, mergetreshold, ...
+                                 minsize, maxsize, roi);
         frame(rc) = rc;
-        aoi_as_string{rc} = num2str(aoi);
+        aoi_as_string{rc} = num2str(aois);
         rc = rc+1;
     end
     
     % save aoi data
     csvheaders = {'frame', 'face_aoi'};
-    saveCsvFile([directorypath filesep 'aois.csv'], csvheaders, frame,  aoi_as_string);
+    saveCsvFile([directorypath filesep 'aois.csv'], csvheaders, frame, ...
+                aoi_as_string);
 end
